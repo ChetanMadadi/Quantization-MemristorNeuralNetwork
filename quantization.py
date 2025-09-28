@@ -116,18 +116,21 @@ def quantize_tensor(input, quant_values):
         Quantized tensor
     """
     input_flat = input.view(-1, 1)
-    quant_values = quant_values.to(input.device)
+    quant_values = quant_values.to(input.device)  
     idx = torch.searchsorted(quant_values, input_flat)
     idx = torch.clamp(idx, 0, len(quant_values) - 1)
 
-    left = torch.where(idx > 0, quant_values[idx - 1], quant_values[idx])
-    right = quant_values[idx]
-    idx = torch.where(
-        torch.abs(input_flat - left) < torch.abs(input_flat - right),
-        idx - 1,
-        idx
-    )
-    return quant_values[idx].view_as(input)
+    left_idx = (idx - 1).clamp(min=0)
+    right_idx = idx
+
+    left = quant_values[left_idx]
+    right = quant_values[right_idx]
+
+    # Choose the closest one
+    closer_to_left = (input_flat - left).abs() < (input_flat - right).abs()
+    final_idx = torch.where(closer_to_left, left_idx, right_idx)
+
+    return quant_values[final_idx].view_as(input)
 
 
 def post_training_quantize(model, quant_values):
@@ -155,16 +158,11 @@ def replace_layers_with_ste(model, quant_values):
     Returns:
         Model with STE quantized layers
     """
-    def replace_with_quantized(module, quant_values):
-        for name, child in module.named_children():
-            if isinstance(child, (nn.Conv2d, nn.Linear)):
-                new_layer = SteLayer(child, quant_values)
-                setattr(module, name, new_layer)
-            else:
-                replace_with_quantized(child, quant_values)
-        return module
-
-    return replace_with_quantized(model, quant_values)
+    for name, module in model.named_children():
+        if isinstance(module, (nn.Conv2d, nn.Linear)):
+            setattr(model, name, SteLayer(module, quant_values))
+        else:
+            replace_layers_with_ste(module, quant_values)
 
 
 def replace_layers_with_alpha_blend(model, quant_values, alpha=0.0):
@@ -178,8 +176,7 @@ def replace_layers_with_alpha_blend(model, quant_values, alpha=0.0):
     """
     for name, module in model.named_children():
         if isinstance(module, (nn.Conv2d, nn.Linear)):
-            new_layer = AlphaBlendLayer(module, quant_values, alpha)
-            setattr(model, name, new_layer)
+            setattr(model, name, AlphaBlendLayer(module, quant_values, alpha))
         else:
             replace_layers_with_alpha_blend(module, quant_values, alpha)
 

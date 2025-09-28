@@ -75,24 +75,6 @@ def get_criterion():
     """
     return nn.CrossEntropyLoss()
 
-
-def print_model_summary(model, model_name):
-    """
-    Print model summary including parameter count
-    
-    Args:
-        model: PyTorch model
-        model_name: Name of the model for display
-    """
-    total_params = sum(p.numel() for p in model.parameters())
-    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    
-    print(f"\n{model_name} Summary:")
-    print(f"Total parameters: {total_params:,}")
-    print(f"Trainable parameters: {trainable_params:,}")
-    print(f"Model: {model}")
-
-
 def save_results(results_dict, filename):
     """
     Save training results to file
@@ -107,21 +89,3 @@ def save_results(results_dict, filename):
         json.dump(results_dict, f, indent=2)
     
     print(f"Results saved to {filename}")
-
-
-def load_results(filename):
-    """
-    Load training results from file
-    
-    Args:
-        filename: Input filename
-    
-    Returns:
-        dict: Training results
-    """
-    import json
-    
-    with open(filename, 'r') as f:
-        results = json.load(f)
-    
-    return results
