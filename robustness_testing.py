@@ -185,13 +185,13 @@ def print_robustness_summary(robustness_metrics):
     print("ROBUSTNESS ANALYSIS SUMMARY")
     print(f"{'='*60}")
     
-    print(f"{'Model':<15} {'Baseline':<10} {'5% Drop':<10} {'10% Drop':<11} {'20% Drop':<11} {'AUC':<10}")
+    print(f"{'Model':<15} {'Baseline':<10} {'5% Drop':<10} {'10% Drop':<11} {'20% Drop':<11}")
     print("-" * 70)
     
     for model_name, metrics in robustness_metrics.items():
         print(f"{model_name:<15} {metrics['baseline_accuracy']:<10.2f} "
               f"{metrics['accuracy_drop_5%']:<10.2f} {metrics['accuracy_drop_10%']:<11.2f} "
-              f"{metrics['accuracy_drop_20%']:<11.2f} {metrics['auc_robustness']:<10.2f}")
+              f"{metrics['accuracy_drop_20%']:<11.2f}")
 
 
 def clean_state_dict(state_dict):

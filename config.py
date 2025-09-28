@@ -5,7 +5,7 @@ Configuration file for memristor-based CNN quantization experiments
 import numpy as np
 
 # Training Configuration
-EPOCHS = 50
+EPOCHS = 5 # Reduced for quicker testing; set to 50 for full experiments
 BASE_LR = 0.1
 LR_MIN_SCALER = 0.01
 WEIGHT_DECAY = 5e-4

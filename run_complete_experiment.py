@@ -108,7 +108,7 @@ def run_complete_experiment(output_dir="experiment_results",
             }
         }
         
-        save_results(combined_results, 'combined_experiment_results.pth')
+        save_results(combined_results, 'combined_experiment_results.json')
         
         # Print final summary
         print_experiment_summary(training_results, robustness_metrics)
@@ -118,7 +118,7 @@ def run_complete_experiment(output_dir="experiment_results",
         print("="*60)
         print(f"All results saved in: {os.path.abspath('.')}")
         print("Files generated:")
-        print("  - combined_experiment_results.pth (all results)")
+        print("  - combined_experiment_results.json (all results)")
         print("  - ste_model.pth, alpha_blend_model.pth, baseline_model.pth, ptq_model.pth (models)")
         print("  - training_curves.png, test_accuracy_comparison.png (training plots)")
         print("  - robustness_analysis.png, robustness_metrics.png (robustness plots)")

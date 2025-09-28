@@ -15,7 +15,7 @@ from robustness_testing import (run_robustness_analysis, calculate_robustness_me
                                print_robustness_summary, clean_state_dict)
 from visualization import (plot_robustness_analysis, plot_robustness_comparison_bar,
                           plot_test_accuracy_comparison, set_plot_style)
-from utils import set_seed, get_device
+from utils import set_seed, get_device, get_criterion
 from config import get_quantization_values
 from quantization import post_training_quantize
 
@@ -102,7 +102,7 @@ def run_robustness_experiment(model_paths=None, noise_levels=None, repeats=10):
     
     # Load test data
     _, _, test_loader = get_data_loaders()
-    criterion = nn.CrossEntropyLoss()
+    criterion = get_criterion()
     
     # Load trained models
     models = load_trained_models(model_paths, device)
@@ -141,9 +141,9 @@ def run_robustness_experiment(model_paths=None, noise_levels=None, repeats=10):
     
     # Create visualizations
     print("\nGenerating robustness plots...")
-    plot_test_accuracy_comparison({}, robustness_results, save_path="robustness_test_accuracy.png")
-    plot_robustness_analysis(robustness_results, save_path="robustness_analysis.png")
-    plot_robustness_comparison_bar(robustness_metrics, save_path="robustness_metrics.png")
+    # plot_test_accuracy_comparison({}, robustness_results, save_path="robustness_test_accuracy.png")
+    # plot_robustness_analysis(robustness_results, save_path="robustness_analysis.png")
+    # plot_robustness_comparison_bar(robustness_metrics, save_path="robustness_metrics.png")
     
     # Save results
     torch.save({
