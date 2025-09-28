@@ -9,7 +9,7 @@ import numpy as np
 import copy
 
 from config import *
-from models import create_resnet18_model, apply_post_training_quantization
+from models import create_resnet18_model
 from data_utils import get_data_loaders
 from robustness_testing import (run_robustness_analysis, calculate_robustness_metrics, 
                                print_robustness_summary, clean_state_dict)
@@ -17,6 +17,7 @@ from visualization import (plot_robustness_analysis, plot_robustness_comparison_
                           plot_test_accuracy_comparison, set_plot_style)
 from utils import set_seed, get_device
 from config import get_quantization_values
+from quantization import post_training_quantize
 
 def load_trained_models(model_paths, device):
     """
@@ -63,7 +64,7 @@ def apply_quantization_to_models(models, quant_values, device):
     for model_name, model in models.items():
         # Create a copy to avoid modifying the original
         quantized_model = copy.deepcopy(model)
-        apply_post_training_quantization(quantized_model, quant_values_tensor)
+        post_training_quantize(quantized_model, quant_values_tensor)
         quantized_models[model_name] = quantized_model
         print(f"Applied quantization to {model_name}")
     
