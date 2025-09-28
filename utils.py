@@ -8,7 +8,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from config import BASE_LR, LR_MIN_SCALER, MOMENTUM, WEIGHT_DECAY
+from config import BASE_LR, LR_MIN_SCALER, MOMENTUM, WEIGHT_DECAY, EPOCHS
 
 
 def set_seed(seed):
@@ -39,13 +39,12 @@ def get_device():
     return device
 
 
-def create_optimizer_and_scheduler(model, epochs):
+def create_optimizer_and_scheduler(model):
     """
     Create optimizer and learning rate scheduler
     
     Args:
         model: Model to optimize
-        epochs: Total number of training epochs
     
     Returns:
         tuple: (optimizer, scheduler)
@@ -59,7 +58,7 @@ def create_optimizer_and_scheduler(model, epochs):
     
     scheduler = optim.lr_scheduler.CosineAnnealingLR(
         optimizer,
-        T_max=epochs,
+        T_max=EPOCHS,
         eta_min=BASE_LR * LR_MIN_SCALER
     )
     

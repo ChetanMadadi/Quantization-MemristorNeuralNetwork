@@ -52,8 +52,7 @@ def run_experiment():
     ste_model = SteModel(quant_values, device, NUM_CLASSES).to(device)
     
     optimizer_ste, scheduler_ste = create_optimizer_and_scheduler(
-        ste_model, BASE_LR, MOMENTUM, WEIGHT_DECAY, EPOCHS, LR_MIN_SCALER
-    )
+        ste_model)
     
     val_acc_ste, train_loss_ste = train_ste_model(
         ste_model, train_loader, val_loader, criterion, optimizer_ste, 
@@ -72,9 +71,7 @@ def run_experiment():
     # 2. Alpha Blend Model
     ab_model = AlphaBlendModel(quant_values, device, NUM_CLASSES).to(device)
     
-    optimizer_ab, scheduler_ab = create_optimizer_and_scheduler(
-        ab_model, BASE_LR, MOMENTUM, WEIGHT_DECAY, EPOCHS, LR_MIN_SCALER
-    )
+    optimizer_ab, scheduler_ab = create_optimizer_and_scheduler(ab_model)
     
     val_acc_ab, train_loss_ab = train_alpha_blend_model(
         ab_model, train_loader, val_loader, criterion, optimizer_ab, 
@@ -93,9 +90,7 @@ def run_experiment():
     # 3. Baseline Model (No Quantization)
     baseline_model = create_resnet18_model(num_classes=NUM_CLASSES).to(device)
     
-    optimizer_baseline, scheduler_baseline = create_optimizer_and_scheduler(
-        baseline_model, BASE_LR, MOMENTUM, WEIGHT_DECAY, EPOCHS, LR_MIN_SCALER
-    )
+    optimizer_baseline, scheduler_baseline = create_optimizer_and_scheduler(baseline_model)
     
     val_acc_baseline, train_loss_baseline = train_baseline_model(
         baseline_model, train_loader, val_loader, criterion, optimizer_baseline, 

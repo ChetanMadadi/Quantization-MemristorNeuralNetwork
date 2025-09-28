@@ -8,7 +8,7 @@ from quantization import AlphaBlendLayer, anneal_alpha
 
 
 def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, 
-                device, val_acc_list, train_loss_list, epochs, model_type="FP"):
+                device, epochs, model_type="FP"):
     """
     Universal training function for all model types
     
@@ -27,6 +27,8 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
     """
     best_val_acc = 0.0
     best_model_path = f"best_{model_type}_model.pth"
+    train_loss_list =[]
+    val_acc_list = []
 
     for epoch in range(epochs):
         # Handle alpha blending for AB models
@@ -76,7 +78,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
 
 
 def train_ste_model(model, train_loader, val_loader, criterion, optimizer, scheduler, 
-              device, val_acc_list, train_loss_list, epochs):
+              device, epochs):
     """
     Train model with Straight-Through Estimator quantization
     
@@ -88,16 +90,14 @@ def train_ste_model(model, train_loader, val_loader, criterion, optimizer, sched
         optimizer: Optimizer
         scheduler: Learning rate scheduler
         device: Device to run on
-        val_acc_list: List to store validation accuracies
-        train_loss_list: List to store training losses
         epochs: Number of training epochs
     """
     return train_model(model, train_loader, val_loader, criterion, optimizer, 
-                      scheduler, device, val_acc_list, train_loss_list, epochs, "STE")
+                      scheduler, device, epochs, "STE")
 
 
 def train_alpha_blend_model(model, train_loader, val_loader, criterion, optimizer, scheduler,
-                      device, val_acc_list, train_loss_list, epochs):
+                      device, epochs):
     """
     Train model with Alpha Blending quantization
     
@@ -109,16 +109,14 @@ def train_alpha_blend_model(model, train_loader, val_loader, criterion, optimize
         optimizer: Optimizer
         scheduler: Learning rate scheduler
         device: Device to run on
-        val_acc_list: List to store validation accuracies
-        train_loss_list: List to store training losses
         epochs: Number of training epochs
     """
     return train_model(model, train_loader, val_loader, criterion, optimizer, 
-                      scheduler, device, val_acc_list, train_loss_list, epochs, "AB")
+                      scheduler, device, epochs, "AB")
 
 
 def train_baseline_model(model, train_loader, val_loader, criterion, optimizer, scheduler,
-                         device, val_acc_list, train_loss_list, epochs):
+                         device, epochs):
     """
     Train full-precision model (baseline)
     
@@ -130,12 +128,10 @@ def train_baseline_model(model, train_loader, val_loader, criterion, optimizer, 
         optimizer: Optimizer
         scheduler: Learning rate scheduler
         device: Device to run on
-        val_acc_list: List to store validation accuracies
-        train_loss_list: List to store training losses
         epochs: Number of training epochs
     """
     return train_model(model, train_loader, val_loader, criterion, optimizer, 
-                      scheduler, device, val_acc_list, train_loss_list, epochs, "FP")
+                      scheduler, device, epochs, "FP")
 
 
 def test(model, test_loader, device, criterion):
